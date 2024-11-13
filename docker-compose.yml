@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  database:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: arduino_gym
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - arduino-network
+
+  web:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    networks:
+      - arduino-network
+    depends_on:
+      - database
+
+  backend:
+    build:
+      context: ./src/ArduinoGymAccess.Api
+    networks:
+      - arduino-network
+    depends_on:
+      - database
+
+  frontend:
+    build:
+      context: ./src/ArduinoGymAccess.Web
+    networks:
+      - arduino-network
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+networks:
+  arduino-network:
+    driver: bridge

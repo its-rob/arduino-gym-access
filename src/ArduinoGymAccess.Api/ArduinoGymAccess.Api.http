@@ -1,0 +1,6 @@
+@ArduinoGymAccess.Api_HostAddress = http://localhost:5165
+
+GET {{ArduinoGymAccess.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
